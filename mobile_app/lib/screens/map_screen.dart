@@ -58,9 +58,8 @@ class _MapScreenState extends State<MapScreen> {
                 id: soundscape.id,
                 title: soundscape.title,
                 period: soundscape.period,
-                latitude: soundscape.latitude,
-                longitude: soundscape.longitude,
-                emotion: soundscape.emotion,
+                position: LatLng(soundscape.latitude, soundscape.longitude),
+                onTap: () => _showCanalSoundscapeDetail(soundscape),
               );
             }).toList(),
             onMapClick: (latLng) {

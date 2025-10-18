@@ -103,374 +103,233 @@ class _PlayerScreenState extends State<PlayerScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.primaryBlack,
-      body: Stack(
-        children: [
-          // 背景配图（模糊效果）
-          Positioned.fill(
-            child: widget.soundscape['imageUrl'] != null
-                ? Image.asset(
-                    widget.soundscape['imageUrl'],
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(color: AppTheme.primaryBlack);
-                    },
-                  )
-                : Container(color: AppTheme.primaryBlack),
-          ),
-          // 渐变遮罩
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppTheme.primaryBlack.withValues(alpha: 0.7),
-                    AppTheme.primaryBlack.withValues(alpha: 0.95),
-                    AppTheme.primaryBlack,
+      body: InkPaintingBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              // 顶部栏
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.keyboard_arrow_down, size: 28),
+                      color: AppTheme.accentWhite,
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.more_vert),
+                      color: AppTheme.accentWhite,
+                      onPressed: _showMoreOptions,
+                    ),
                   ],
                 ),
               ),
-            ),
-          ),
-          // 内容
-          SafeArea(
-            child: Column(
-              children: [
-                // 顶部栏
+
+              const Spacer(),
+
+              // 墨点可视化
+              _buildInkDotVisualization(),
+
+              const SizedBox(height: 40),
+
+              // 声景信息
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  children: [
+                    Text(
+                      widget.soundscape['title'] ?? '唐代扬州夜雨',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 1.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ParameterLabel(
+                          parameter: 'Period',
+                          value: widget.soundscape['period'] ?? '唐代',
+                          showLine: false,
+                        ),
+                        const SizedBox(width: 24),
+                        ParameterLabel(
+                          parameter: 'Location',
+                          value: widget.soundscape['location'] ?? '扬州',
+                          showLine: false,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // 进度条
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  children: [
+                    SliderTheme(
+                      data: SliderThemeData(
+                        activeTrackColor: AppTheme.accentWhite,
+                        inactiveTrackColor: AppTheme.subtleGray,
+                        thumbColor: AppTheme.accentWhite,
+                        overlayColor: AppTheme.accentWhite.withValues(
+                          alpha: 0.2,
+                        ),
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 6,
+                        ),
+                        trackHeight: 2,
+                      ),
+                      child: Slider(
+                        value: _currentPosition,
+                        min: 0,
+                        max: _totalDuration,
+                        onChanged: (value) {
+                          setState(() => _currentPosition = value);
+                        },
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _formatDuration(_currentPosition),
+                          style: const TextStyle(
+                            color: AppTheme.inkLight,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          _formatDuration(_totalDuration),
+                          style: const TextStyle(
+                            color: AppTheme.inkLight,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // 控制按钮
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // 收藏按钮
+                    _buildControlButton(
+                      icon: _isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      onPressed: () =>
+                          setState(() => _isFavorite = !_isFavorite),
+                      size: 28,
+                    ),
+
+                    // 上一曲
+                    _buildControlButton(
+                      icon: Icons.skip_previous,
+                      onPressed: () {},
+                      size: 32,
+                    ),
+
+                    // 播放/暂停
+                    Container(
+                      width: 70,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: AppTheme.inkGradient,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.inkBlack.withValues(alpha: 0.4),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          _isPlaying ? Icons.pause : Icons.play_arrow,
+                          size: 36,
+                        ),
+                        color: AppTheme.accentWhite,
+                        onPressed: _togglePlay,
+                      ),
+                    ),
+
+                    // 下一曲
+                    _buildControlButton(
+                      icon: Icons.skip_next,
+                      onPressed: () {},
+                      size: 32,
+                    ),
+
+                    // 分享按钮
+                    _buildControlButton(
+                      icon: Icons.share,
+                      onPressed: _shareSound,
+                      size: 28,
+                    ),
+                  ],
+                ),
+              ),
+
+              const Spacer(),
+
+              // 诗词卡片
+              if (widget.soundscape['poem'] != null)
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.secondaryBlack.withValues(alpha: 0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.keyboard_arrow_down, size: 28),
-                          color: AppTheme.accentWhite,
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ),
-                      const Spacer(),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.secondaryBlack.withValues(alpha: 0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.more_vert),
-                          color: AppTheme.accentWhite,
-                          onPressed: _showMoreOptions,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Spacer(),
-
-                // 主配图（圆形）
-                Container(
-                  width: 280,
-                  height: 280,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        blurRadius: 40,
-                        offset: const Offset(0, 20),
-                      ),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: widget.soundscape['imageUrl'] != null
-                        ? Image.asset(
-                            widget.soundscape['imageUrl'],
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: AppTheme.subtleGray,
-                                child: const Icon(
-                                  Icons.landscape,
-                                  size: 80,
-                                  color: AppTheme.lightGray,
-                                ),
-                              );
-                            },
-                          )
-                        : Container(
-                            color: AppTheme.subtleGray,
-                            child: const Icon(
-                              Icons.landscape,
-                              size: 80,
-                              color: AppTheme.lightGray,
+                  child: InkStyleComponents.inkCard(
+                    child: Column(
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(
+                              Icons.format_quote,
+                              color: AppTheme.inkLight,
+                              size: 16,
                             ),
-                          ),
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-
-                // 声景信息
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.soundscape['title'] ?? '唐代扬州夜雨',
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1.0,
-                          color: AppTheme.accentWhite,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      // 诗词
-                      if (widget.soundscape['poem'] != null)
-                        Text(
-                          widget.soundscape['poem'],
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppTheme.lightGray.withValues(alpha: 0.9),
-                            fontStyle: FontStyle.italic,
-                            height: 1.6,
-                            letterSpacing: 0.5,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.inkLight.withValues(alpha: 0.3),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: AppTheme.inkLight.withValues(alpha: 0.5),
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              widget.soundscape['period'] ?? '唐代',
-                              style: const TextStyle(
+                            SizedBox(width: 8),
+                            Text(
+                              '收尾诗',
+                              style: TextStyle(
                                 fontSize: 12,
                                 color: AppTheme.inkLight,
+                                letterSpacing: 2.0,
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.inkLight.withValues(alpha: 0.3),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: AppTheme.inkLight.withValues(alpha: 0.5),
-                                width: 1,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.location_on,
-                                  size: 12,
-                                  color: AppTheme.inkLight,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  widget.soundscape['location'] ?? '扬州',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: AppTheme.inkLight,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-
-                // 进度条
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Column(
-                    children: [
-                      SliderTheme(
-                        data: SliderThemeData(
-                          activeTrackColor: AppTheme.accentWhite,
-                          inactiveTrackColor: AppTheme.subtleGray,
-                          thumbColor: AppTheme.accentWhite,
-                          overlayColor: AppTheme.accentWhite.withValues(
-                            alpha: 0.2,
-                          ),
-                          thumbShape: const RoundSliderThumbShape(
-                            enabledThumbRadius: 6,
-                          ),
-                          trackHeight: 2,
-                        ),
-                        child: Slider(
-                          value: _currentPosition,
-                          min: 0,
-                          max: _totalDuration,
-                          onChanged: (value) {
-                            setState(() => _currentPosition = value);
-                          },
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _formatDuration(_currentPosition),
-                            style: const TextStyle(
-                              color: AppTheme.inkLight,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            _formatDuration(_totalDuration),
-                            style: const TextStyle(
-                              color: AppTheme.inkLight,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // 控制按钮
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // 收藏按钮
-                      _buildControlButton(
-                        icon: _isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        onPressed: () =>
-                            setState(() => _isFavorite = !_isFavorite),
-                        size: 28,
-                      ),
-
-                      // 上一曲
-                      _buildControlButton(
-                        icon: Icons.skip_previous,
-                        onPressed: () {},
-                        size: 32,
-                      ),
-
-                      // 播放/暂停
-                      Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: AppTheme.inkGradient,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.inkBlack.withValues(alpha: 0.4),
-                              blurRadius: 12,
-                              spreadRadius: 2,
                             ),
                           ],
                         ),
-                        child: IconButton(
-                          icon: Icon(
-                            _isPlaying ? Icons.pause : Icons.play_arrow,
-                            size: 36,
-                          ),
-                          color: AppTheme.accentWhite,
-                          onPressed: _togglePlay,
+                        const SizedBox(height: 12),
+                        PoemTextWidget(
+                          poem:
+                              widget.soundscape['poem'] ??
+                              '夜雨扬州巷，墨香染诗篇。\n古韵今犹在，声景忆当年。',
                         ),
-                      ),
-
-                      // 下一曲
-                      _buildControlButton(
-                        icon: Icons.skip_next,
-                        onPressed: () {},
-                        size: 32,
-                      ),
-
-                      // 分享按钮
-                      _buildControlButton(
-                        icon: Icons.share,
-                        onPressed: _shareSound,
-                        size: 28,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
-                const Spacer(),
-
-                // 诗词卡片
-                if (widget.soundscape['poem'] != null)
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: InkStyleComponents.inkCard(
-                      child: Column(
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(
-                                Icons.format_quote,
-                                color: AppTheme.inkLight,
-                                size: 16,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                '收尾诗',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppTheme.inkLight,
-                                  letterSpacing: 2.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          PoemTextWidget(
-                            poem:
-                                widget.soundscape['poem'] ??
-                                '夜雨扬州巷，墨香染诗篇。\n古韵今犹在，声景忆当年。',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                const SizedBox(height: 16),
-              ],
-            ),
+              const SizedBox(height: 16),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
