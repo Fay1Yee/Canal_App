@@ -1,0 +1,73 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+*.iml
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.idea/
+.vscode/
+
+# Android
+*.apk
+*.ap_
+*.aab
+*.dex
+local.properties
+*.jks
+android/app/google-services.json
+
+# iOS
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+**/Pods/
+**/.symlinks/
+**/xcuserdata
+**/.generated/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/.symlinks/
+ios/Pods/
+
+# Web
+web/flutter_service_worker.js
+
+# Backup files
+*.backup
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+
+# Build outputs
+mobile_app/build/
+mobile_app/.dart_tool/
+mobile_app/android/build/
+mobile_app/ios/build/
+mobile_app/linux/build/
+mobile_app/macos/build/
+mobile_app/windows/build/
+
+# Generated files
+mobile_app/android/.gradle/
+mobile_app/ios/Flutter/Generated.xcconfig
+mobile_app/ios/Flutter/flutter_export_environment.sh
+
+# Large assets (optional - uncomment if you want to exclude)
+# mobile_app/assets/images/
+# mobile_app/assets/audio/
+

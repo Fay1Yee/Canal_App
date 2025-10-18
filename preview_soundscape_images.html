@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>京杭大运河声景配图预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .card-meta {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .badge-period {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge-style {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .card-id {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .close:hover {
+            color: #ddd;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 京杭大运河声景配图</h1>
+            <div class="subtitle">AI生成 · 豆包SeeDream · 2K高清</div>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">24</span>
+                    <span class="stat-label">总图片数</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">21</span>
+                    <span class="stat-label">水墨画风格</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">现代摄影</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="gallery">
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/tongzhou_wharf.jpg" alt="通州码头晨钟" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/tongzhou_wharf.jpg')">
+                <div class="card-content">
+                    <div class="card-title">通州码头晨钟</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">明代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 1 · tongzhou_wharf.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/shichahai_night.jpg" alt="什刹海夜市" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/shichahai_night.jpg')">
+                <div class="card-content">
+                    <div class="card-title">什刹海夜市</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">清代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 2 · shichahai_night.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/tianjin_sancha.jpg" alt="天津三岔口" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/tianjin_sancha.jpg')">
+                <div class="card-content">
+                    <div class="card-title">天津三岔口</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">清代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 3 · tianjin_sancha.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/cangzhou_lion.jpg" alt="沧州铁狮吼" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/cangzhou_lion.jpg')">
+                <div class="card-content">
+                    <div class="card-title">沧州铁狮吼</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">宋代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 4 · cangzhou_lion.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/dezhou_station.jpg" alt="德州扒鸡香" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/dezhou_station.jpg')">
+                <div class="card-content">
+                    <div class="card-title">德州扒鸡香</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">清代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 5 · dezhou_station.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/liaocheng_rain.jpg" alt="东昌府夜雨" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/liaocheng_rain.jpg')">
+                <div class="card-content">
+                    <div class="card-title">东昌府夜雨</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">明代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 6 · liaocheng_rain.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/jining_bamboo.jpg" alt="济宁竹竿巷" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/jining_bamboo.jpg')">
+                <div class="card-content">
+                    <div class="card-title">济宁竹竿巷</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">清代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 7 · jining_bamboo.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/xuzhou_ferry.jpg" alt="徐州黄河渡" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/xuzhou_ferry.jpg')">
+                <div class="card-content">
+                    <div class="card-title">徐州黄河渡</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">唐代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 8 · xuzhou_ferry.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/suqian_town.jpg" alt="宿迁古镇雨" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/suqian_town.jpg')">
+                <div class="card-content">
+                    <div class="card-title">宿迁古镇雨</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">宋代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 9 · suqian_town.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/huaian_caoyun.jpg" alt="淮安漕运署" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/huaian_caoyun.jpg')">
+                <div class="card-content">
+                    <div class="card-title">淮安漕运署</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">明代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 10 · huaian_caoyun.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/yangzhou_bridge.jpg" alt="扬州二十四桥" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/yangzhou_bridge.jpg')">
+                <div class="card-content">
+                    <div class="card-title">扬州二十四桥</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">唐代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 11 · yangzhou_bridge.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/yangzhou_shouxi.jpg" alt="扬州瘦西湖晨" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/yangzhou_shouxi.jpg')">
+                <div class="card-content">
+                    <div class="card-title">扬州瘦西湖晨</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">清代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 12 · yangzhou_shouxi.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/zhenjiang_jinshan.jpg" alt="镇江金山寺钟" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/zhenjiang_jinshan.jpg')">
+                <div class="card-content">
+                    <div class="card-title">镇江金山寺钟</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">宋代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 13 · zhenjiang_jinshan.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/changzhou_tianning.jpg" alt="常州天宁寺" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/changzhou_tianning.jpg')">
+                <div class="card-content">
+                    <div class="card-title">常州天宁寺</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">明代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 14 · changzhou_tianning.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/wuxi_yuantou.jpg" alt="无锡鼋头渚" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/wuxi_yuantou.jpg')">
+                <div class="card-content">
+                    <div class="card-title">无锡鼋头渚</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">清代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 15 · wuxi_yuantou.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/suzhou_hanshan.jpg" alt="苏州寒山寺钟" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/suzhou_hanshan.jpg')">
+                <div class="card-content">
+                    <div class="card-title">苏州寒山寺钟</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">唐代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 16 · suzhou_hanshan.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/suzhou_pingjiang.jpg" alt="苏州平江路" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/suzhou_pingjiang.jpg')">
+                <div class="card-content">
+                    <div class="card-title">苏州平江路</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">宋代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 17 · suzhou_pingjiang.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/jiaxing_nanhu.jpg" alt="嘉兴南湖烟雨" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/jiaxing_nanhu.jpg')">
+                <div class="card-content">
+                    <div class="card-title">嘉兴南湖烟雨</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">清代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 18 · jiaxing_nanhu.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/huzhou_silk.jpg" alt="湖州丝绸市" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/huzhou_silk.jpg')">
+                <div class="card-content">
+                    <div class="card-title">湖州丝绸市</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">宋代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 19 · huzhou_silk.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/hangzhou_gongchen.jpg" alt="杭州拱宸桥" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/hangzhou_gongchen.jpg')">
+                <div class="card-content">
+                    <div class="card-title">杭州拱宸桥</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">明代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 20 · hangzhou_gongchen.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/hangzhou_xihu.jpg" alt="杭州西湖晨曦" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/hangzhou_xihu.jpg')">
+                <div class="card-content">
+                    <div class="card-title">杭州西湖晨曦</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">宋代</span>
+                        <span class="badge badge-style">水墨画</span>
+                    </div>
+                    <div class="card-id">ID: 21 · hangzhou_xihu.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/modern_tongzhou.jpg" alt="现代通州运河公园" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/modern_tongzhou.jpg')">
+                <div class="card-content">
+                    <div class="card-title">现代通州运河公园</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">现代</span>
+                        <span class="badge badge-style">现代摄影</span>
+                    </div>
+                    <div class="card-id">ID: 22 · modern_tongzhou.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/modern_yangzhou.jpg" alt="现代扬州瘦西湖" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/modern_yangzhou.jpg')">
+                <div class="card-content">
+                    <div class="card-title">现代扬州瘦西湖</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">现代</span>
+                        <span class="badge badge-style">现代摄影</span>
+                    </div>
+                    <div class="card-id">ID: 23 · modern_yangzhou.jpg</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="mobile_app/assets/images/soundscapes/modern_hangzhou.jpg" alt="现代杭州运河夜景" class="card-image" onclick="openModal('mobile_app/assets/images/soundscapes/modern_hangzhou.jpg')">
+                <div class="card-content">
+                    <div class="card-title">现代杭州运河夜景</div>
+                    <div class="card-meta">
+                        <span class="badge badge-period">现代</span>
+                        <span class="badge badge-style">现代摄影</span>
+                    </div>
+                    <div class="card-id">ID: 24 · modern_hangzhou.jpg</div>
+                </div>
+            </div>
+
+        </div>
+        
+        <footer>
+            <p><strong>生成时间:</strong> 2025年10月18日</p>
+            <p><strong>技术栈:</strong> Python + OpenAI SDK + 豆包AI</p>
+            <p><strong>项目:</strong> 京杭大运河声景地图App</p>
+        </footer>
+    </div>
+    
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        function openModal(imgPath) {
+            document.getElementById('imageModal').style.display = 'flex';
+            document.getElementById('modalImage').src = imgPath;
+        }
+        
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+        
+        // ESC键关闭
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
