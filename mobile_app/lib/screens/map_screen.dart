@@ -225,25 +225,33 @@ class _MapScreenState extends State<MapScreen> {
                     background: Stack(
                       fit: StackFit.expand,
                       children: [
-                        // 水墨画背景
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppTheme.inkDark,
-                                AppTheme.inkGray.withValues(alpha: 0.8),
-                              ],
-                            ),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.landscape,
-                              size: 120,
-                              color: AppTheme.paperWhite.withValues(alpha: 0.3),
-                            ),
-                          ),
+                        // 声景AI配图
+                        Image.asset(
+                          soundscape.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    AppTheme.inkDark,
+                                    AppTheme.inkGray.withValues(alpha: 0.8),
+                                  ],
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.landscape,
+                                  size: 120,
+                                  color: AppTheme.paperWhite.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         // 渐变遮罩
                         Positioned(
